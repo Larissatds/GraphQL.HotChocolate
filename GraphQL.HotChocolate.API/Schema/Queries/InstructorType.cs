@@ -1,6 +1,6 @@
-﻿namespace GraphQL.HotChocolate.API.Schema
+﻿namespace GraphQL.HotChocolate.API.Schema.Queries
 {
-    public class StudentType
+    public class InstructorType
     {
         public Guid Id { get; set; }
 
@@ -8,6 +8,6 @@
 
         public string LastName { get; set; }
 
-        public double GPA { get; set; }
+        public double Salary { get; set; }
     }
 }

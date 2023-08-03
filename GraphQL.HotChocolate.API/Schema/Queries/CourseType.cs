@@ -1,4 +1,4 @@
-﻿namespace GraphQL.HotChocolate.API.Schema
+﻿namespace GraphQL.HotChocolate.API.Schema.Queries
 {
 
     public enum Subject

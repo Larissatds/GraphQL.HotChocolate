@@ -1,6 +1,6 @@
 ﻿using Bogus;
 
-namespace GraphQL.HotChocolate.API.Schema
+namespace GraphQL.HotChocolate.API.Schema.Queries
 {
     public class Query
     {

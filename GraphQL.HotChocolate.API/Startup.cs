@@ -1,4 +1,5 @@
-﻿using GraphQL.HotChocolate.API.Schema;
+﻿using GraphQL.HotChocolate.API.Schema.Mutations;
+using GraphQL.HotChocolate.API.Schema.Queries;
 
 namespace GraphQL.HotChocolate.API
 {
@@ -6,7 +7,9 @@ namespace GraphQL.HotChocolate.API
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddGraphQLServer().AddQueryType<Query>();
+            services.AddGraphQLServer()
+                .AddQueryType<Query>()
+                .AddMutationType<Mutation>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) 
