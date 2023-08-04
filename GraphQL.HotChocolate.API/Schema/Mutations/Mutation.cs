@@ -1,5 +1,7 @@
 ﻿using Bogus.DataSets;
 using GraphQL.HotChocolate.API.Schema.Queries;
+using GraphQL.HotChocolate.API.Schema.Subscriptions;
+using HotChocolate.Subscriptions;
 
 namespace GraphQL.HotChocolate.API.Schema.Mutations
 {
@@ -11,9 +13,9 @@ namespace GraphQL.HotChocolate.API.Schema.Mutations
             _courses = new List<CourseResult>();
         }
 
-        public CourseResult CreateCourse(CourseInputType courseInput)
+        public async Task<CourseResult> CreateCourse(CourseInputType courseInput, [Service] ITopicEventSender topicEventSender)
         {
-            CourseResult courseType = new CourseResult()
+            CourseResult course = new CourseResult()
             {
                 Id = Guid.NewGuid(),
                 Name = courseInput.Name,
@@ -21,12 +23,14 @@ namespace GraphQL.HotChocolate.API.Schema.Mutations
                 InstructorId = courseInput.InstructorId
             };
 
-            _courses.Add(courseType);
+            _courses.Add(course);
 
-            return courseType;
+            await topicEventSender.SendAsync(nameof(Subscription.CourseCreated), course);
+
+            return course;
         }
 
-        public CourseResult UpdateCourse(Guid id, CourseInputType courseInput)
+        public async Task<CourseResult> UpdateCourse(Guid id, CourseInputType courseInput, [Service] ITopicEventSender topicEventSender)
         {
             CourseResult course = _courses.FirstOrDefault(c => c.Id == id);
 
@@ -38,6 +42,9 @@ namespace GraphQL.HotChocolate.API.Schema.Mutations
             course.Name = courseInput.Name;
             course.Subject = courseInput.Subject;
             course.InstructorId = courseInput.InstructorId;
+
+            string updateCourseTopic = $"{course.Id}_{nameof(Subscription.CourseUpdated)}";
+            await topicEventSender.SendAsync(updateCourseTopic, course);
 
             return course;
         }

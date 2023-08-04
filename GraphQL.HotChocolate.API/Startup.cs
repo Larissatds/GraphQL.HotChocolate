@@ -1,5 +1,6 @@
 ﻿using GraphQL.HotChocolate.API.Schema.Mutations;
 using GraphQL.HotChocolate.API.Schema.Queries;
+using GraphQL.HotChocolate.API.Schema.Subscriptions;
 
 namespace GraphQL.HotChocolate.API
 {
@@ -9,7 +10,10 @@ namespace GraphQL.HotChocolate.API
         {
             services.AddGraphQLServer()
                 .AddQueryType<Query>()
-                .AddMutationType<Mutation>();
+                .AddMutationType<Mutation>()
+                .AddSubscriptionType<Subscription>();
+
+            services.AddGraphQLServer().AddInMemorySubscriptions();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) 
@@ -20,6 +24,8 @@ namespace GraphQL.HotChocolate.API
             }
 
             app.UseRouting();
+
+            app.UseWebSockets();
 
             app.UseEndpoints(endpoints => 
             {
