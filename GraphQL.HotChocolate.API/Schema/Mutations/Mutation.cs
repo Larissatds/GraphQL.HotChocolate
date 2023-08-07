@@ -1,29 +1,40 @@
 ﻿using Bogus.DataSets;
+using GraphQL.HotChocolate.API.DTOs;
 using GraphQL.HotChocolate.API.Schema.Queries;
 using GraphQL.HotChocolate.API.Schema.Subscriptions;
+using GraphQL.HotChocolate.API.Services.Courses;
 using HotChocolate.Subscriptions;
 
 namespace GraphQL.HotChocolate.API.Schema.Mutations
 {
     public class Mutation
     {
-        private readonly List<CourseResult> _courses;
-        public Mutation()
+        private readonly CoursesRepository _coursesRepository;
+
+        public Mutation(CoursesRepository coursesRepository)
         {
-            _courses = new List<CourseResult>();
+            _coursesRepository = coursesRepository;
         }
+
 
         public async Task<CourseResult> CreateCourse(CourseInputType courseInput, [Service] ITopicEventSender topicEventSender)
         {
-            CourseResult course = new CourseResult()
+            CourseDTO courseDTO = new CourseDTO()
             {
-                Id = Guid.NewGuid(),
                 Name = courseInput.Name,
                 Subject = courseInput.Subject,
                 InstructorId = courseInput.InstructorId
             };
 
-            _courses.Add(course);
+            courseDTO = await _coursesRepository.Create(courseDTO);
+
+            CourseResult course = new CourseResult()
+            {
+                Id = courseDTO.Id,
+                Name = courseDTO.Name,
+                Subject = courseDTO.Subject,
+                InstructorId = courseDTO.InstructorId
+            };
 
             await topicEventSender.SendAsync(nameof(Subscription.CourseCreated), course);
 
@@ -32,16 +43,23 @@ namespace GraphQL.HotChocolate.API.Schema.Mutations
 
         public async Task<CourseResult> UpdateCourse(Guid id, CourseInputType courseInput, [Service] ITopicEventSender topicEventSender)
         {
-            CourseResult course = _courses.FirstOrDefault(c => c.Id == id);
-
-            if (course == null)
+            CourseDTO courseDTO = new CourseDTO()
             {
-                throw new GraphQLException(new Error("Course not found.", "COURSE_NOT_FOUND"));
-            }
+                Id = id,
+                Name = courseInput.Name,
+                Subject = courseInput.Subject,
+                InstructorId = courseInput.InstructorId
+            };
 
-            course.Name = courseInput.Name;
-            course.Subject = courseInput.Subject;
-            course.InstructorId = courseInput.InstructorId;
+            courseDTO = await _coursesRepository.Update(courseDTO);
+
+            CourseResult course = new CourseResult()
+            {
+                Id = courseDTO.Id,
+                Name = courseDTO.Name,
+                Subject = courseDTO.Subject,
+                InstructorId = courseDTO.InstructorId
+            };
 
             string updateCourseTopic = $"{course.Id}_{nameof(Subscription.CourseUpdated)}";
             await topicEventSender.SendAsync(updateCourseTopic, course);
@@ -49,9 +67,16 @@ namespace GraphQL.HotChocolate.API.Schema.Mutations
             return course;
         }
 
-        public bool DeleteCourse(Guid id)
+        public async Task<bool> DeleteCourse(Guid id)
         {
-            return _courses.RemoveAll(c => c.Id == id) >= 1;
+            try
+            {
+                return await _coursesRepository.Delete(id);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

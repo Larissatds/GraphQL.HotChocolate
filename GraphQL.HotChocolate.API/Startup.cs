@@ -2,6 +2,7 @@
 using GraphQL.HotChocolate.API.Schema.Queries;
 using GraphQL.HotChocolate.API.Schema.Subscriptions;
 using GraphQL.HotChocolate.API.Services;
+using GraphQL.HotChocolate.API.Services.Courses;
 using Microsoft.EntityFrameworkCore;
 
 namespace GraphQL.HotChocolate.API
@@ -26,6 +27,8 @@ namespace GraphQL.HotChocolate.API
 
             string connectionString = _configuration.GetConnectionString("default");
             services.AddPooledDbContextFactory<SchoolDbContext>(o => o.UseSqlite(connectionString));
+
+            services.AddScoped<CoursesRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) 
