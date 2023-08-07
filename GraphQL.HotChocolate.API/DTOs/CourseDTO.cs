@@ -1,8 +1,8 @@
 ﻿using GraphQL.HotChocolate.API.Models;
 
-namespace GraphQL.HotChocolate.API.Schema.Mutations
+namespace GraphQL.HotChocolate.API.DTOs
 {
-    public class CourseResult
+    public class CourseDTO
     {
         public Guid Id { get; set; }
 
@@ -11,5 +11,9 @@ namespace GraphQL.HotChocolate.API.Schema.Mutations
         public Subject Subject { get; set; }
 
         public Guid InstructorId { get; set; }
+
+        public InstructorDTO Instructor { get; set; }
+
+        public IEnumerable<StudentDTO> Students { get; set; }
     }
 }

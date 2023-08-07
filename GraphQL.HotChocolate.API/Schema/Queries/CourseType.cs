@@ -1,13 +1,7 @@
-﻿namespace GraphQL.HotChocolate.API.Schema.Queries
+﻿using GraphQL.HotChocolate.API.Models;
+
+namespace GraphQL.HotChocolate.API.Schema.Queries
 {
-
-    public enum Subject
-    {
-        Mathematics,
-        Science,
-        History
-    }
-
     public class CourseType
     {
         public Guid Id { get; set; }

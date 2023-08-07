@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using GraphQL.HotChocolate.API.Models;
 
 namespace GraphQL.HotChocolate.API.Schema.Queries
 {

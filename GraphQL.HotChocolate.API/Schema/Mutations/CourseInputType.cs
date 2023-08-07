@@ -1,4 +1,4 @@
-﻿using GraphQL.HotChocolate.API.Schema.Queries;
+﻿using GraphQL.HotChocolate.API.Models;
 
 namespace GraphQL.HotChocolate.API.Schema.Mutations
 {
