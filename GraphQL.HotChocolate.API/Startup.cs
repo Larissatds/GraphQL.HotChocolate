@@ -24,7 +24,8 @@ namespace GraphQL.HotChocolate.API
                 .AddQueryType<Query>()
                 .AddMutationType<Mutation>()
                 .AddSubscriptionType<Subscription>()
-                .AddFiltering();
+                .AddFiltering()
+                .AddSorting();
 
             services.AddGraphQLServer().AddInMemorySubscriptions();
 

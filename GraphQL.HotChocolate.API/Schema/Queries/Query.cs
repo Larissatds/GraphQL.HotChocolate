@@ -1,5 +1,6 @@
 ﻿using GraphQL.HotChocolate.API.DTOs;
 using GraphQL.HotChocolate.API.Schema.Filters;
+using GraphQL.HotChocolate.API.Schema.Sorters;
 using GraphQL.HotChocolate.API.Services;
 using GraphQL.HotChocolate.API.Services.Courses;
 
@@ -30,6 +31,7 @@ namespace GraphQL.HotChocolate.API.Schema.Queries
         [UseDbContext(typeof(SchoolDbContext))]
         [UsePaging(IncludeTotalCount = true, DefaultPageSize = 10)]
         [UseFiltering(typeof(CourseFilterType))]
+        [UseSorting(typeof(CourseSortType))]
         public IQueryable<CourseType> GetPaginatedCourses([ScopedService] SchoolDbContext context)
         {
             return context.Courses.Select(c => new CourseType()
