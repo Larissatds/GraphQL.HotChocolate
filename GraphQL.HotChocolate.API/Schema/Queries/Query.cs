@@ -42,6 +42,22 @@ namespace GraphQL.HotChocolate.API.Schema.Queries
                 InstructorId = c.InstructorId
             });
         }
+        
+        [UseDbContext(typeof(SchoolDbContext))]
+        [UsePaging(IncludeTotalCount = true, DefaultPageSize = 10)]
+        [UseProjection]
+        [UseFiltering(typeof(CourseFilterType))]
+        [UseSorting(typeof(CourseSortType))]
+        public IQueryable<CourseType> GetProjectionCourses([ScopedService] SchoolDbContext context)
+        {
+            return context.Courses.Select(c => new CourseType()
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Subject = c.Subject,
+                InstructorId = c.InstructorId
+            });
+        }
 
         [UseOffsetPaging(IncludeTotalCount = true, DefaultPageSize = 10)]
         public async Task<IEnumerable<CourseType>> GetOffsetCourses()
