@@ -1,4 +1,6 @@
-﻿using GraphQL.HotChocolate.API.DataLoaders;
+﻿using FirebaseAdmin;
+using FirebaseAdminAuthentication.DependencyInjection.Extensions;
+using GraphQL.HotChocolate.API.DataLoaders;
 using GraphQL.HotChocolate.API.Schema.Mutations;
 using GraphQL.HotChocolate.API.Schema.Queries;
 using GraphQL.HotChocolate.API.Schema.Subscriptions;
@@ -26,7 +28,11 @@ namespace GraphQL.HotChocolate.API
                 .AddSubscriptionType<Subscription>()
                 .AddFiltering()
                 .AddSorting()
-                .AddProjections();
+                .AddProjections()
+                .AddAuthorization();
+
+            services.AddSingleton(FirebaseApp.Create());
+            services.AddFirebaseAuthentication();
 
             services.AddGraphQLServer().AddInMemorySubscriptions();
 
@@ -46,6 +52,8 @@ namespace GraphQL.HotChocolate.API
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseWebSockets();
 
